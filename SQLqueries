@@ -1,0 +1,260 @@
+### Implement data updates according to client's requirements
+
+/* see the original data in category */
+select * 
+from category
+
+/* add genres to category table */
+insert into category
+(category_id, name, last_update)
+values('17', 'Thriller', now())
+,('18', 'Crime', now())
+,('19', 'Mystery', now())
+,('20', 'Romance', now())
+,('21', 'War', now())
+
+/* update African Egg's category_id to the id of Thriller */
+/* find out the category_id of Thriller */
+select cy.category_id
+, cy.name
+form category cy
+where cy.name='Thriller'
+
+/*update category_id in film_category to 17 which is the category_id of Thriller */
+update film_category fc
+set category_id=17
+from film f
+where f.film_id=fc.film_id and f.title='African Egg'
+
+/* check the updated outcome */
+select fc.film_id fc.category_id, f.title
+from film_category fc
+left join film f
+on fc.film_id=f.film_id
+where f.title='African Egg'
+
+/* remove Mystery from category */
+/* find out if there is any films in the category Mystery */
+select fc.film_id
+,fc.category_id
+,cy.name
+from film_category fc
+left join category cy
+on fc.category_id=cy.category_id
+where cy.name='Mystery'
+
+/* delete Mystery from category table */
+delete from category cy
+where cy.name='Mystery'
+
+### Clean data for film and customer tables
+
+/* check duplicates */
+select title
+       ,release_year
+       ,language_id
+       ,rental_duration
+       ,COUNT(*)
+from film
+group by title,
+         release_year,
+         language_id,
+         rental_duration
+having COUNT(*) >1
+
+select store_id
+,first_name
+,last_name
+,email
+,address_id
+,activebool
+from customer
+group by store_id
+,first_name
+,last_name
+,email
+,address_id
+,activebool
+having COUNT(*) >1
+
+/* check non-uniform values */
+select distinct
+       release_year
+from film;
+
+select distinct
+       language_id
+from film;
+
+select distinct
+       rental_duration
+from film;
+
+select distinct
+       rating
+from film;
+
+/* check missing values */
+select title
+       ,release_year
+       ,language_id
+       ,rental_duration
+from film
+where title isnull 
+or release_year isnull 
+or language_id isnull 
+or rental_duration isnull
+
+select first_name
+       ,last_name
+	     ,email
+       ,address_id
+from customer
+where first_name isnull 
+or last_name isnull 
+or email isnull 
+or address_id isnull
+
+
+### Conduct descriptive analysis
+
+/* list the minimum and the maximum replacement costs for each rating category ordered by rating as specicfic order */
+select min(f.replacement_cost) as min_rep_cost
+, max(f.replacement_cost) as max_rep_cost
+, fc.category_id
+, cy.name
+, f.rating
+from film f
+left join film_category fc on f.film_id=fc.film_id
+left join category cy on fc.category_id=cy.category_id
+group by fc.category_id,cy.name, f.rating
+order by case when f.rating='G' then 1
+              when f.rating='PG' then 2
+			  when f.rating='PG-13' then 3
+			  when f.rating='R' then 4
+			  when f.rating='NC-17' then 5 
+			  end
+
+/* for numeric columns in table film */
+select min(rental_duration) as min_rental_duration
+,max(rental_duration) as max_rental_duration
+,avg(rental_duration) as avg_rental_duration
+,min(rental_rate) as min_rental_rate
+,max(rental_rate) as max_rental_rate
+,avg(rental_rate) as avg_rental_rate
+,min(length) as min_length
+,max(length) as max_length
+,avg(length) as avg_length
+,min(replacement_cost) as min_replacement_cost
+,max(replacement_cost) as max_replacement_cost
+,avg(replacement_cost) as avg_replacement_cost
+from film
+
+/* for non-numeric columns in table film */
+select mode() within group (order by rating)
+       as mode_rating
+	   ,mode() within group (order by language_id)
+	   as mode_language_id
+from film
+
+
+### Conduct data analysis to answer client's marketing questions
+
+/* the top 10 countries in which company's customers are */
+select count(cust.customer_id) as number_customer
+ ,country.country_id
+ ,country
+ from customer cust
+ left join adress addr on cust.address_id=addr.address_id
+ left join city on addr.city_id=city.city_id
+ left join country on city.country_id=country.country_id
+ group by country.country_id
+ ,country
+order by number_customer desc
+limit 10
+
+/* the top 10 cities for company's customers in the top 10 countries based on the result above */
+select count(cust.customer_id) as number_customer
+,city.city_id
+,city.city
+,country.country_id
+,country
+ from customer cust
+ left join adress addr on cust.address_id=addr.address_id
+ left join city on addr.city_id=city.city_id
+ left join country on city.country_id=country.country_id
+ group by city.city_id
+ ,city.city
+ ,country.country_id
+ ,country
+ having country.country_id in ('44','23','103','50','60','15','80','75','97','45')
+order by number_customer desc
+limit 10
+
+/* the top 5 paid customers in the top 10 cities based on the result above */
+select sum(amount) as total_amount
+,cust.customer_id
+,city.city_id
+,city.city
+from customer cust
+left join payment pay on cust.customer_id=pay.customer_id
+left join address addr on cust.address_id=addr.address_id
+left join city on addr.city_id=city.city_id
+group by cust.customer_id
+,city.city_id
+,city.city
+having city.city_id in ('42','306','80','274','482','224','529','527','51',591')
+order by total_amount desc
+limit 5
+
+/* find the average amount paid by the top 5 customer */
+select avg(total_amount) as avg_amount
+from
+(
+select sum(amount) as total_amount
+,cust.customer_id
+,city.city_id
+,city.city
+from customer cust
+left join payment pay on cust.customer_id=pay.customer_id
+left join address addr on cust.address_id=addr.address_id
+left join city on addr.city_id=city.city_id
+group by cust.customer_id
+,city.city_id
+,city.city
+having city.city_id in ('42','306','80','274','482','224','529','527','51',591')
+order by total_amount desc
+limit 5
+) as total_amount_paid
+
+/* find out how many of the top 5 customers are based within each country */
+with top5cust as
+(
+select sum(amount) as total_amount
+,cust.customer_id
+,city.city_id
+,city.city
+,country.country_id
+,country.country
+from customer cust
+left join payment pay on cust.customer_id=pay.customer_id
+left join address addr on cust.address_id=addr.address_id
+left join city on addr.city_id=city.city_id
+group by cust.customer_id
+,city.city_id
+,city.city
+having city.city_id in ('42','306','80','274','482','224','529','527','51',591')
+order by total_amount desc
+limit 5
+)
+
+select country.country
+,count(cust.customer_id) as all_customer_count
+,count(top5cust.customer_id) as top_customer_count
+from customer cust
+left join address addr on cust.address_id=addr.address_id
+left join city on addr.city_id=city.city_id
+left join country on country.country_id=city.country_id
+left join top5cust on cust.customer_id=top5cust.customer_id
+group by country.country
+order by top_customer_count desc, all_customer_count desc
