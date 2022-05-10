@@ -12,7 +12,7 @@ Some data updates required from client must manipulate before starting analyzing
 Challenges: datasets are not clean and without recent data.
 
 ## Analytical Methods
-The analysis mainly used SQL and Excel to manipulate descriptive analysis and grouping, aggregating data to extra insights. Finally, using Tabluea to generate analysis report to client.
+The analysis mainly used SQL and Excel to manipulate descriptive analysis and grouping, aggregating data to extra how the bussiness distribute by different dimensions, including movie genres, customers, and geographic markets. Finally, using Tabluea to generate analysis report to client.
 
 ## Outputs
 1. Entity Relationship Diagram (ERD): Rockbuster_ERD
