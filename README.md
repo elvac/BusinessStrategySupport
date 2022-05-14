@@ -1,5 +1,5 @@
 # MarketingStrategySupportWithSQL
-Mainly SQL and Excel to conduct data analysis for a movie rental company to support its business strategy
+Mainly using SQL and Excel to conduct data analysis for a movie rental company to support its business strategy
 
 
 ## Project Brief
