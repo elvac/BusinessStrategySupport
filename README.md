@@ -1,4 +1,4 @@
-# MarketingStrategySupportWithSQL
+# Rockbuster Business Strategy Support
 Mainly using SQL and Excel to conduct data analysis for a movie rental company to support its business strategy
 
 <img src=https://github.com/elvac/Image/blob/main/movie_rental_img.png width="800">
@@ -21,8 +21,6 @@ In this project, the company was going to make a huge business strategic shift. 
 - How did the business distribute in geographic markets (countries or cities)?
 - What was the leading market of the business?
 - How loyalty of the customers (by country)?
-
-
 
 ## Outputs
 The outcome of the data analysis gave conclusions of the business operation based on the data source and recommendations for optimized business strategy. The outputs included Excel files, entity relationship Diagram and data dictionary for analytical process and a final visualization report.
