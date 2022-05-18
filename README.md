@@ -1,7 +1,8 @@
 # Rockbuster Business Strategy Support
 Mainly using SQL and Excel to conduct data analysis for a movie rental company to support its business strategy
 
-<img src=https://github.com/elvac/Image/blob/main/movie_rental_img.png width="800">
+<img width="799" alt="movie_rental_img" src="https://user-images.githubusercontent.com/105080282/168959890-898b5b4c-140a-401c-b364-01b5586c55e3.png">
+
 
 ## Project Brief
 Rockbuster is a movie rental company that used to have stores around the world. Facing stiff competition from streaming services such as Netflix and Amazon Prime, the Rockbuster Stealth management team is planning to use its existing movie licenses to launch an online video rental service in order to stay competitive.  
